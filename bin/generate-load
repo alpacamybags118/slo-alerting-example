@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+while [ 1 -eq 1 ]
+do
+  curl http://localhost:3000/health
+  sleep 5
+done

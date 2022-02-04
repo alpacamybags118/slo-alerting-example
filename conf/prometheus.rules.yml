@@ -1,0 +1,31 @@
+groups:
+  - name: example
+    rules:
+    - record: http_error_rate_5m
+      expr: sum(rate(http_requests_total{status="5XX"}[5m])) / sum(rate(http_requests_total[5m])) or vector(0)
+    - record: http_error_rate_10m
+      expr: sum(rate(http_requests_total{status="5XX"}[10m])) / sum(rate(http_requests_total[10m])) or vector(0)
+    - record: http_error_rate_30m
+      expr: sum(rate(http_requests_total{status="5XX"}[30m])) / sum(rate(http_requests_total[30m])) or vector(0)
+    - record: http_error_rate_1h
+      expr: sum(rate(http_requests_total{status="5XX"}[1h])) / sum(rate(http_requests_total[1h])) or vector(0)
+    - record: http_error_rate_6h
+      expr: sum(rate(http_requests_total{status="5XX"}[6h])) / sum(rate(http_requests_total[6h])) or vector(0)
+    - alert: SimpleSLOAlert
+      expr: http_error_rate_10m > 0.001
+      labels:
+        severity: page
+      annotations:
+        summary: Failing SLO Simple Check
+    - alert: MultiBurnRate
+      expr: http_error_rate_1h > (14.4*0.001) or http_error_rate_6h > (6*0.001)
+      labels:
+        severity: page
+      annotations:
+        summary: Failing SLO MultiBurnRate
+    - alert: MultiWindowBurnRate
+      expr: (http_error_rate_1h > (14.4*0.001) and http_error_rate_5m > (14.4*0.001)) or (http_error_rate_6h > (6*0.001) and http_error_rate_30m > (6*0.001))
+      labels:
+        severity: page
+      annotations:
+        summary: Failing SLO MultiWindowBurnRate
